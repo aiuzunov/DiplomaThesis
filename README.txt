@@ -1,0 +1,1 @@
+This is my bachelor diploma thesis git repo.
