@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Header extends StatelessWidget {
   double size;
@@ -12,7 +12,7 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(text,
-        style: TextStyle(
+        style: GoogleFonts.roboto(
             color: color, fontSize: size, fontWeight: FontWeight.bold));
   }
 }

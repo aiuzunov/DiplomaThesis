@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:recipes_app/screens/startup.dart';
+import 'package:get/get.dart';
+import 'package:recipes_app/screens/switch.dart';
+import 'package:recipes_app/translation/translate_text.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -18,11 +21,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      translations: TransalteText(),
       title: 'Recipes App',
+      locale: const Locale('bg', 'BG'),
       debugShowCheckedModeBanner: false,
-      theme:
-          ThemeData(brightness: Brightness.dark, primarySwatch: Colors.green),
+      theme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.green,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent),
       home: FutureBuilder(
           future: _fbApp,
           builder: (context, snapshot) {
@@ -30,7 +38,7 @@ class MyApp extends StatelessWidget {
               print('You have an error! ${snapshot.error.toString()}');
               return const Text('Something went wrong!');
             } else if (snapshot.hasData) {
-              return const StartupPage(title: 'Recipes App');
+              return const SwitchPage();
             } else {
               return const Center(child: CircularProgressIndicator());
             }

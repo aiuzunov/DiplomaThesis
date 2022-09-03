@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:recipes_app/widgets/app_bar.dart';
 import 'package:recipes_app/widgets/header.dart';
+import 'package:get/get.dart';
 
 class Fridge extends StatefulWidget {
   const Fridge({super.key});
@@ -10,8 +13,11 @@ class Fridge extends StatefulWidget {
 }
 
 class _FridgePageState extends State<Fridge> {
+  final user = FirebaseAuth.instance.currentUser!;
+
   final CollectionReference _ingredients =
       FirebaseFirestore.instance.collection('ingredients');
+
   String searchVal = "";
   final TextEditingController _nameController = TextEditingController();
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
@@ -35,13 +41,13 @@ class _FridgePageState extends State<Fridge> {
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: 'name'.tr),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
-                  child: const Text('Update'),
+                  child: Text('update'.tr),
                   onPressed: () async {
                     final String name = _nameController.text;
                     await _ingredients
@@ -61,6 +67,12 @@ class _FridgePageState extends State<Fridge> {
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("You have sucessfully deleted the ingredient.")));
+  }
+
+  void searchRecipeOnButtonTap() {
+    setState(() {
+      searchVal = _nameController.text.trim();
+    });
   }
 
   Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
@@ -84,16 +96,17 @@ class _FridgePageState extends State<Fridge> {
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: 'name'.tr),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
-                  child: const Text('Add'),
+                  child: Text('add'.tr),
                   onPressed: () async {
                     final String name = _nameController.text;
-                    await _ingredients.add({"name": name});
+                    await _ingredients
+                        .add({"name": name, "user_uid": user.uid});
                     _nameController.text = '';
                   },
                 )
@@ -107,17 +120,7 @@ class _FridgePageState extends State<Fridge> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: const Icon(Icons.cookie_outlined),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Icon(Icons.person),
-          )
-        ],
-      ),
+      appBar: customAppBar(context),
       floatingActionButton: FloatingActionButton(
           onPressed: () => _create(),
           backgroundColor: Colors.white,
@@ -131,7 +134,7 @@ class _FridgePageState extends State<Fridge> {
           ),
           Container(
               margin: const EdgeInsets.only(left: 20),
-              child: Header(text: "Ingredients")),
+              child: Header(text: "ingredients".tr)),
           const SizedBox(
             height: 30,
           ),
@@ -144,8 +147,13 @@ class _FridgePageState extends State<Fridge> {
                 });
               },
               decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: "Find an ingredient...",
+                  suffixIcon: IconButton(
+                    onPressed: searchRecipeOnButtonTap,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    icon: const Icon(Icons.search),
+                  ),
+                  hintText: "find_ingredient".tr,
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade600)),
                   enabledBorder: OutlineInputBorder(
@@ -157,9 +165,10 @@ class _FridgePageState extends State<Fridge> {
           ),
           Expanded(
               child: StreamBuilder(
-                  stream: (searchVal != "" && searchVal != null)
+                  stream: (searchVal != "")
                       ? FirebaseFirestore.instance
                           .collection('ingredients')
+                          .where('user_uid', isEqualTo: user.uid)
                           .where('name',
                               isGreaterThanOrEqualTo: searchVal,
                               isLessThan: searchVal.substring(
@@ -169,14 +178,17 @@ class _FridgePageState extends State<Fridge> {
                                       1))
                           .orderBy('name')
                           .snapshots()
-                      : _ingredients.orderBy('name').snapshots(),
+                      : _ingredients
+                          .where('user_uid', isEqualTo: user.uid)
+                          .orderBy('name')
+                          .snapshots(),
                   builder:
                       (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                     if (streamSnapshot.hasData) {
                       return GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, mainAxisExtent: 400),
+                                  crossAxisCount: 3, mainAxisExtent: 400),
                           shrinkWrap: true,
                           itemCount: streamSnapshot.data!.docs.length,
                           itemBuilder: (context, index) {

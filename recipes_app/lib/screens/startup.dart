@@ -1,8 +1,8 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:recipes_app/screens/fridge.dart';
+import 'package:recipes_app/screens/recipe.dart';
 import 'package:recipes_app/screens/recipes.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
 
 import 'home.dart';
 
@@ -18,7 +18,7 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> {
   int _counter = 0;
   int _currentIndex = 0;
-  final screens = [const Home(), const Recipes(), Fridge()];
+  final screens = [Home(), const Recipes(), const Fridge()];
 
   // void _incrementCounter() {
   //   DatabaseReference testRef = FirebaseDatabase.instance.ref().child("test");
@@ -42,18 +42,18 @@ class _StartupPageState extends State<StartupPage> {
         elevation: 0,
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Начало',
+            icon: const Icon(Icons.home),
+            label: 'home'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.food_bank),
-            label: 'Рецепти',
+            icon: const Icon(Icons.food_bank),
+            label: 'recipes'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.storage_rounded),
-            label: 'Съставки',
+            icon: const Icon(Icons.storage_rounded),
+            label: 'ingredients'.tr,
           ),
         ],
       ),
