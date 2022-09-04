@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,15 +17,12 @@ class Recipes extends StatefulWidget {
   const Recipes({super.key});
 
   @override
-  State<Recipes> createState() => _FridgePageState();
+  State<Recipes> createState() => _RecipesPageState();
 }
 
-class _FridgePageState extends State<Recipes> {
+class _RecipesPageState extends State<Recipes> {
   final user = FirebaseAuth.instance.currentUser!;
   final translator = GoogleTranslator();
-
-  final CollectionReference _ingredients =
-      FirebaseFirestore.instance.collection('ingredients');
 
   final url = 'https://api.edamam.com/api/recipes/v2';
   List<RecipeModel> recipesList = <RecipeModel>[];
@@ -206,73 +204,113 @@ class _FridgePageState extends State<Recipes> {
               child: GridView.builder(
                   controller: ScrollController(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, mainAxisExtent: 450),
+                      crossAxisCount: 2, mainAxisExtent: 500),
                   shrinkWrap: true,
                   itemCount: recipesList.length,
                   itemBuilder: (context, index) {
                     final RecipeModel documentSnapshot = recipesList[index];
-                    return Column(children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return RecipePage(recipeModel: documentSnapshot);
-                          }));
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(12),
-                            width: 200,
-                            decoration: BoxDecoration(
-                                color: Colors.black54,
-                                borderRadius: BorderRadius.circular(16)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Hero(
-                                      tag: documentSnapshot.url,
-                                      child: Image.network(
-                                          documentSnapshot.image.toString()),
-                                    )),
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0, horizontal: 8),
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                    return Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return RecipePage(
+                                  favorite: false,
+                                  recipeModel: documentSnapshot);
+                            }));
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(12),
+                              width: 300,
+                              height: 450,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[850],
+                                  borderRadius: BorderRadius.circular(16)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Hero(
+                                        tag: documentSnapshot.url,
+                                        child: Image.network(
+                                            documentSnapshot.image.toString()),
+                                      )),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2.0, horizontal: 8),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(documentSnapshot.name,
+                                                maxLines: 2,
+                                                style: const TextStyle(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize: 20)),
+                                          ])),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const Divider(color: Colors.white),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text(documentSnapshot.name,
-                                              style: const TextStyle(
-                                                  fontSize: 20)),
-                                          // Text('Description test',
-                                          //     style: TextStyle(
-                                          //         color: Colors.grey[700]))
-                                        ])),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                            iconSize: 20,
-                                            onPressed: () => {},
-                                            icon: const Icon(
-                                                Icons.remove_red_eye_sharp)),
-                                      ],
-                                    )),
-                                const SizedBox(
-                                  height: 1,
-                                ),
-                              ],
-                            )),
-                      )
-                    ]);
+                                          const Icon(Icons.scale_outlined),
+                                          const SizedBox(
+                                            width: 2,
+                                          ),
+                                          Text(
+                                              "${documentSnapshot.totalWeight.toInt().toString()} g"),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Icon(Icons.run_circle),
+                                          const SizedBox(
+                                            width: 2,
+                                          ),
+                                          Text(
+                                              "${documentSnapshot.calories.toInt().toString()} cal"),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Icon(Icons.timer_outlined),
+                                          const SizedBox(
+                                            width: 2,
+                                          ),
+                                          Text(
+                                              "${documentSnapshot.totalTime.toString()}'"),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                        ],
+                                      )),
+                                  const SizedBox(height: 5),
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "${documentSnapshot.servings} ${'servings'.tr}"),
+                                        ],
+                                      )),
+                                ],
+                              )),
+                        ),
+                      ],
+                    );
                   }))
         ],
       ),

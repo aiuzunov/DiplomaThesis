@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:recipes_app/widgets/app_bar.dart';
 import 'package:recipes_app/widgets/header.dart';
 import 'package:get/get.dart';
+
+import '../static/helper_functions.dart';
+import '../widgets/grid_image.dart';
 
 class Fridge extends StatefulWidget {
   const Fridge({super.key});
@@ -15,10 +20,25 @@ class Fridge extends StatefulWidget {
 class _FridgePageState extends State<Fridge> {
   final user = FirebaseAuth.instance.currentUser!;
 
+  final List<String> randomImages = [
+    "../lib/images/banana.jpg",
+    "../lib/images/melon.jpg",
+    "../lib/images/orange.jpg",
+    "../lib/images/pear.jpg",
+    "../lib/images/cabage.jpg",
+    "../lib/images/eggplant.jpg",
+    "../lib/images/potato.jpg",
+    "../lib/images/strawberry.jpg",
+    "../lib/images/cherries.jpg",
+    "../lib/images/burger.jpg",
+    "../lib/images/pizza.jpg",
+  ];
+
   final CollectionReference _ingredients =
       FirebaseFirestore.instance.collection('ingredients');
 
   String searchVal = "";
+  int selectedImageIndex = 1;
   final TextEditingController _nameController = TextEditingController();
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     if (documentSnapshot != null) {
@@ -29,36 +49,74 @@ class _FridgePageState extends State<Fridge> {
         isScrollControlled: true,
         context: context,
         builder: (BuildContext ctx) {
-          return Padding(
-            padding: EdgeInsets.only(
-                top: 20,
-                left: 20,
-                right: 20,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'name'.tr),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  child: Text('update'.tr),
-                  onPressed: () async {
-                    final String name = _nameController.text;
-                    await _ingredients
-                        .doc(documentSnapshot!.id)
-                        .update({"name": name});
-                    _nameController.text = '';
-                  },
-                )
-              ],
-            ),
-          );
+          return StatefulBuilder(
+              builder: (BuildContext ctx, StateSetter setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  top: 20,
+                  left: 20,
+                  right: 20,
+                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(labelText: 'name'.tr),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text("Choose an image:"),
+                  GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 10,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                      padding:
+                          const EdgeInsets.only(top: 16, left: 16, right: 16),
+                      children: [
+                        for (int i = 1; i < randomImages.length; i++)
+                          GestureDetector(
+                              onTap: () => {
+                                    setState(
+                                      () {
+                                        selectedImageIndex = i;
+                                      },
+                                    )
+                                  },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          style: selectedImageIndex == i
+                                              ? BorderStyle.solid
+                                              : BorderStyle.none,
+                                          width: 3,
+                                          color: selectedImageIndex == i
+                                              ? Colors.white
+                                              : Colors.transparent)),
+                                  child:
+                                      GridViewImage(imageUrl: randomImages[i])))
+                      ]),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    child: Text('update'.tr),
+                    onPressed: () async {
+                      final String name = _nameController.text;
+                      await _ingredients.doc(documentSnapshot!.id).update({
+                        "name": name,
+                        "image_url": randomImages[selectedImageIndex]
+                      });
+                      _nameController.text = '';
+                    },
+                  ),
+                ],
+              ),
+            );
+          });
         });
   }
 
@@ -76,6 +134,7 @@ class _FridgePageState extends State<Fridge> {
   }
 
   Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
+    _nameController.text = '';
     if (documentSnapshot != null) {
       _nameController.text = documentSnapshot['name'];
     }
@@ -84,40 +143,82 @@ class _FridgePageState extends State<Fridge> {
         isScrollControlled: true,
         context: context,
         builder: (BuildContext ctx) {
-          return Padding(
-            padding: EdgeInsets.only(
-                top: 20,
-                left: 20,
-                right: 20,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'name'.tr),
+          return StatefulBuilder(
+            builder: (BuildContext ctx, StateSetter setState) {
+              return Padding(
+                padding: EdgeInsets.only(
+                    top: 20,
+                    left: 20,
+                    right: 20,
+                    bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: 'name'.tr),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Choose an image:"),
+                    GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 10,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                        padding:
+                            const EdgeInsets.only(top: 16, left: 16, right: 16),
+                        children: [
+                          for (int i = 1; i < randomImages.length; i++)
+                            GestureDetector(
+                                onTap: () => {
+                                      setState(
+                                        () {
+                                          selectedImageIndex = i;
+                                        },
+                                      )
+                                    },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            style: selectedImageIndex == i
+                                                ? BorderStyle.solid
+                                                : BorderStyle.none,
+                                            width: 3,
+                                            color: selectedImageIndex == i
+                                                ? Colors.white
+                                                : Colors.transparent)),
+                                    child: GridViewImage(
+                                        imageUrl: randomImages[i])))
+                        ]),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      child: Text('add'.tr),
+                      onPressed: () async {
+                        final String name = _nameController.text;
+                        await _ingredients.add({
+                          "name": name,
+                          "user_uid": user.uid,
+                          "image_url": randomImages[selectedImageIndex]
+                        });
+                        _nameController.text = '';
+                      },
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  child: Text('add'.tr),
-                  onPressed: () async {
-                    final String name = _nameController.text;
-                    await _ingredients
-                        .add({"name": name, "user_uid": user.uid});
-                    _nameController.text = '';
-                  },
-                )
-              ],
-            ),
+              );
+            },
           );
         });
   }
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: customAppBar(context),
@@ -185,86 +286,139 @@ class _FridgePageState extends State<Fridge> {
                   builder:
                       (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                     if (streamSnapshot.hasData) {
-                      return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, mainAxisExtent: 400),
+                      return ListView.builder(
                           shrinkWrap: true,
                           itemCount: streamSnapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 streamSnapshot.data!.docs[index];
-                            return Column(children: <Widget>[
-                              Container(
-                                  padding: const EdgeInsets.all(12),
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black54,
-                                      borderRadius: BorderRadius.circular(16)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Image.asset(
-                                              '../lib/images/anime-girl-with-bow-hair_603843-157.webp')),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12.0, horizontal: 8),
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(documentSnapshot['name'],
-                                                    style: const TextStyle(
-                                                        fontSize: 20)),
-                                                Text('Description test',
-                                                    style: TextStyle(
-                                                        color:
-                                                            Colors.grey[700]))
-                                              ])),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: const [
-                                              Text("Quantity: 5"),
-                                            ],
-                                          )),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              IconButton(
-                                                  iconSize: 20,
-                                                  onPressed: () =>
+                            return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(
+                                    left: 50, right: 50, top: 10, bottom: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[850],
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  children: [
+                                    Image.network(documentSnapshot['image_url'],
+                                        width: 50, height: 50),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Text(documentSnapshot['name'],
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            IconButton(
+                                                iconSize: 20,
+                                                onPressed: () => {
                                                       _update(documentSnapshot),
-                                                  icon: const Icon(Icons.edit)),
-                                              IconButton(
-                                                  iconSize: 20,
-                                                  onPressed: () => _delete(
-                                                      documentSnapshot.id),
-                                                  icon:
-                                                      const Icon(Icons.delete)),
-                                            ],
-                                          )),
-                                      const SizedBox(
-                                        height: 1,
-                                      ),
-                                    ],
-                                  ))
-                            ]);
+                                                    },
+                                                icon: const Icon(Icons.edit)),
+                                            IconButton(
+                                                iconSize: 20,
+                                                onPressed: () => {
+                                                      _delete(
+                                                          documentSnapshot.id)
+                                                    },
+                                                icon: const Icon(Icons.delete)),
+                                          ],
+                                        )),
+                                  ],
+                                ));
                           });
+                      // return GridView.builder(
+                      //     gridDelegate:
+                      //         const SliverGridDelegateWithFixedCrossAxisCount(
+                      //             crossAxisCount: 3, mainAxisExtent: 400),
+                      //     shrinkWrap: true,
+                      //     itemCount: streamSnapshot.data!.docs.length,
+                      //     itemBuilder: (context, index) {
+                      //       final DocumentSnapshot documentSnapshot =
+                      //           streamSnapshot.data!.docs[index];
+                      //       return Column(children: <Widget>[
+                      //         Container(
+                      //             padding: const EdgeInsets.all(12),
+                      //             width: 200,
+                      //             decoration: BoxDecoration(
+                      //                 color: Colors.black54,
+                      //                 borderRadius: BorderRadius.circular(16)),
+                      //             child: Column(
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.start,
+                      //               children: [
+                      //                 ClipRRect(
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(12),
+                      //                     child: Image.asset(
+                      //                         '../lib/images/anime-girl-with-bow-hair_603843-157.webp')),
+                      //                 Padding(
+                      //                     padding: const EdgeInsets.symmetric(
+                      //                         vertical: 12.0, horizontal: 8),
+                      //                     child: Column(
+                      //                         crossAxisAlignment:
+                      //                             CrossAxisAlignment.start,
+                      //                         children: [
+                      //                           Text(documentSnapshot['name'],
+                      //                               style: const TextStyle(
+                      //                                   fontSize: 20)),
+                      //                           Text('Description test',
+                      //                               style: TextStyle(
+                      //                                   color:
+                      //                                       Colors.grey[700]))
+                      //                         ])),
+                      //                 Padding(
+                      //                     padding: const EdgeInsets.symmetric(
+                      //                         horizontal: 10),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: const [
+                      //                         Text("Quantity: 5"),
+                      //                       ],
+                      //                     )),
+                      //                 const SizedBox(
+                      //                   height: 10,
+                      //                 ),
+                      //                 Padding(
+                      //                     padding: const EdgeInsets.symmetric(
+                      //                         horizontal: 10),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         IconButton(
+                      //                             iconSize: 20,
+                      //                             onPressed: () =>
+                      //                                 _update(documentSnapshot),
+                      //                             icon: const Icon(Icons.edit)),
+                      //                         IconButton(
+                      //                             iconSize: 20,
+                      //                             onPressed: () => _delete(
+                      //                                 documentSnapshot.id),
+                      //                             icon:
+                      //                                 const Icon(Icons.delete)),
+                      //                       ],
+                      //                     )),
+                      //                 const SizedBox(
+                      //                   height: 1,
+                      //                 ),
+                      //               ],
+                      //             ))
+                      //       ]);
+                      //     });
                     }
                     return const Center(
                       child: CircularProgressIndicator(),

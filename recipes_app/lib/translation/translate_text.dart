@@ -31,7 +31,10 @@ class TransalteText extends Translations {
           "update": "Update",
           "change_language": "Change language",
           "log_in": "Please Log Into Your Account",
-          "register_below": "Register below with your details"
+          "register_below": "Register below with your details",
+          "first_name": "First Name",
+          "servings": "Servings",
+          "fav_recipes": "Favourite recipes"
         },
         'bg_BG': {
           "email": "Имейл",
@@ -61,7 +64,10 @@ class TransalteText extends Translations {
           "update": "Промени",
           "change_language": "Промени езика",
           "log_in": "Моля влезте във вашият профил",
-          "register_below": "Регистрирайте се като попълните полетата отдолу"
+          "register_below": "Регистрирайте се като попълните полетата отдолу",
+          "first_name": "Име",
+          "servings": "Порции",
+          "fav_recipes": "Любими рецепти"
         }
       };
 }

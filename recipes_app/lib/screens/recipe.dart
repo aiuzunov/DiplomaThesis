@@ -1,25 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recipes_app/models/recipe_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../models/recipe_model.dart';
 import '../widgets/ingredients.dart';
 
-class RecipePage extends StatelessWidget {
+class RecipePage extends StatefulWidget {
   final RecipeModel recipeModel;
-  RecipePage({super.key, required this.recipeModel});
+  bool favorite = false;
+  RecipePage({super.key, required this.recipeModel, required this.favorite});
 
+  @override
+  State<RecipePage> createState() => _RecipePageState();
+}
+
+class _RecipePageState extends State<RecipePage> {
   final user = FirebaseAuth.instance.currentUser!;
+  final CollectionReference _favRecipes =
+      FirebaseFirestore.instance.collection('fav_recipes');
+
+  void saveFavoriteRecipe(RecipeModel documentSnapshot) async {
+    setState(() {
+      widget.favorite = true;
+    });
+
+    await _favRecipes.add({
+      "ingredients": documentSnapshot.ingredients,
+      "servings": documentSnapshot.servings,
+      "calories": documentSnapshot.calories,
+      "totalWeight": documentSnapshot.totalWeight,
+      "totalTime": documentSnapshot.totalTime,
+      "url": documentSnapshot.url,
+      "image": documentSnapshot.image,
+      "source": documentSnapshot.source,
+      "name": documentSnapshot.name
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final _textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
         backgroundColor: Colors.grey[900],
         body: SlidingUpPanel(
@@ -35,24 +59,31 @@ class RecipePage extends StatelessWidget {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Hero(
-                      tag: recipeModel.url,
+                      tag: widget.recipeModel.url,
                       child: Image.network(
-                        recipeModel.image.toString(),
+                        widget.recipeModel.image.toString(),
                         height: (size.height / 2) + 50,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  const Positioned(
-                    top: 40,
-                    right: 20,
-                    child: Icon(
-                      Icons.bookmark_add_outlined,
-                      color: Colors.white,
-                      size: 38,
-                    ),
-                  ),
+                  Positioned(
+                      top: 40,
+                      right: 20,
+                      child: widget.favorite
+                          ? IconButton(
+                              onPressed: () => {},
+                              icon: const Icon(Icons.favorite, size: 38),
+                              color: Colors.teal,
+                            )
+                          : IconButton(
+                              onPressed: () =>
+                                  {saveFavoriteRecipe(widget.recipeModel)},
+                              icon:
+                                  const Icon(Icons.favorite_outline, size: 38),
+                              color: Colors.teal,
+                            )),
                   Positioned(
                     top: 40,
                     left: 20,
@@ -60,7 +91,7 @@ class RecipePage extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: const Icon(
                         CupertinoIcons.back,
-                        color: Colors.white,
+                        color: Colors.teal,
                         size: 38,
                       ),
                     ),
@@ -82,10 +113,10 @@ class RecipePage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12))),
                     ),
                     const SizedBox(height: 30),
-                    Text(recipeModel.name, style: _textTheme.headline6),
+                    Text(widget.recipeModel.name, style: textTheme.headline6),
                     const SizedBox(height: 10),
-                    Text("Author: ${recipeModel.source}",
-                        style: _textTheme.caption),
+                    Text("Author: ${widget.recipeModel.source}",
+                        style: textTheme.caption),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -93,7 +124,8 @@ class RecipePage extends StatelessWidget {
                         const SizedBox(
                           width: 2,
                         ),
-                        Text("${recipeModel.totalWeight.toInt().toString()} g"),
+                        Text(
+                            "${widget.recipeModel.totalWeight.toInt().toString()} g"),
                         const SizedBox(
                           width: 10,
                         ),
@@ -101,7 +133,8 @@ class RecipePage extends StatelessWidget {
                         const SizedBox(
                           width: 2,
                         ),
-                        Text("${recipeModel.calories.toInt().toString()} cal"),
+                        Text(
+                            "${widget.recipeModel.calories.toInt().toString()} cal"),
                         const SizedBox(
                           width: 10,
                         ),
@@ -109,7 +142,7 @@ class RecipePage extends StatelessWidget {
                         const SizedBox(
                           width: 2,
                         ),
-                        Text("${recipeModel.totalTime.toString()}'"),
+                        Text("${widget.recipeModel.totalTime.toString()}'"),
                         const SizedBox(
                           width: 15,
                         ),
@@ -117,7 +150,8 @@ class RecipePage extends StatelessWidget {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text("${recipeModel.servings.toString()} Servings"),
+                        Text(
+                            "${widget.recipeModel.servings.toString()} Servings"),
                       ],
                     ),
                     const SizedBox(
@@ -136,8 +170,9 @@ class RecipePage extends StatelessWidget {
                           Expanded(
                               child: TabBarView(
                             children: [
-                              Ingredients(recipeModel: recipeModel),
-                              const Text("Prepatration"),
+                              Ingredients(recipeModel: widget.recipeModel),
+                              Text(
+                                  "You can find the directions here: ${widget.recipeModel.url}"),
                             ],
                           ))
                         ],

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,9 +23,8 @@ void onSettingsItemTap(BuildContext context, int val) {
 
 Future getWebsiteData() async {
   var response = await http
-      .get(Uri.parse('https://speiseplan.app.itelligence.org/'), headers: {
-    "Access-Control-Allow-Origin": "*",
-  });
+      .get(Uri.parse('https://www.allrecipes.com/recipe/51773/musaka'));
+  print("JOE MAMA");
   print(response.body);
 
   dom.Document html = dom.Document.html(response.body);

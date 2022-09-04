@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipes_app/screens/fav_recipes.dart';
 import 'package:recipes_app/screens/fridge.dart';
-import 'package:recipes_app/screens/recipe.dart';
 import 'package:recipes_app/screens/recipes.dart';
 import 'package:get/get.dart';
 
@@ -16,17 +16,13 @@ class StartupPage extends StatefulWidget {
 }
 
 class _StartupPageState extends State<StartupPage> {
-  int _counter = 0;
   int _currentIndex = 0;
-  final screens = [Home(), const Recipes(), const Fridge()];
-
-  // void _incrementCounter() {
-  //   DatabaseReference testRef = FirebaseDatabase.instance.ref().child("test");
-  //   testRef.set("Hello World ${Random().nextInt(100)}");
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
+  final screens = [
+    Home(),
+    const Recipes(),
+    const FavouriteRecipes(),
+    const Fridge()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +46,10 @@ class _StartupPageState extends State<StartupPage> {
           BottomNavigationBarItem(
             icon: const Icon(Icons.food_bank),
             label: 'recipes'.tr,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.favorite),
+            label: 'fav_recipes'.tr,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.storage_rounded),
