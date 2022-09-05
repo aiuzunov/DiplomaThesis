@@ -12,6 +12,8 @@ class Ingredients extends StatelessWidget {
       children: [
         ListView.separated(
             itemCount: recipeModel.ingredients.length,
+            controller: ScrollController(),
+            primary: false,
             physics: const ScrollPhysics(),
             shrinkWrap: true,
             separatorBuilder: (BuildContext context, int index) {
@@ -23,10 +25,8 @@ class Ingredients extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                        child:
-                            Text("${recipeModel.ingredients[index]['text']}")),
-                    Text(
-                        " (${recipeModel.ingredients[index]['weight'].toInt().toString()} g)"),
+                        child: Text(
+                            "${recipeModel.ingredients[index]['original']}")),
                   ],
                 ),
               );

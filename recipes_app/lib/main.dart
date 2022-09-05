@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
           future: _fbApp,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              print('You have an error! ${snapshot.error.toString()}');
               return const Text('Something went wrong!');
             } else if (snapshot.hasData) {
               return const SwitchPage();

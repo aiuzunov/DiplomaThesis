@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
+import '../static/helper_functions.dart';
+
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({Key? key}) : super(key: key);
 
@@ -20,6 +22,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   Future resetPassword() async {
+    if (_emailController.text.trim() == '') {
+      showErrorMessage("Please fill the email field!", context);
+      return;
+    }
+
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
@@ -29,11 +36,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             return AlertDialog(content: Text('password_reset_email_sent'.tr));
           });
     } on FirebaseAuthException catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(content: Text(e.message.toString()));
-          });
+      showErrorMessage(e.message.toString(), context);
     }
   }
 

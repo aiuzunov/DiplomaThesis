@@ -34,7 +34,19 @@ class TransalteText extends Translations {
           "register_below": "Register below with your details",
           "first_name": "First Name",
           "servings": "Servings",
-          "fav_recipes": "Favourite recipes"
+          "fav_recipes": "Favourite recipes",
+          "step": "Step",
+          "preparation": "Preparation",
+          "author": "Author",
+          "cuisine": "Cuisine",
+          "minimum": "Minimum",
+          "maximum": "Maximum",
+          "proteins": "Proteins",
+          "calories": "Calories",
+          "maximum_2": "Maximum",
+          "time_to_prepare": "time to prepare",
+          "next_step": "Next Step",
+          "prev_step": "Previous Step",
         },
         'bg_BG': {
           "email": "Имейл",
@@ -67,7 +79,19 @@ class TransalteText extends Translations {
           "register_below": "Регистрирайте се като попълните полетата отдолу",
           "first_name": "Име",
           "servings": "Порции",
-          "fav_recipes": "Любими рецепти"
+          "fav_recipes": "Любими рецепти",
+          "step": "Стъпка",
+          "preparation": "Стъпки за приготвяне",
+          "author": "Автор",
+          "cuisine": "Кухня",
+          "minimum": "Минимум",
+          "maximum": "Максимум",
+          "proteins": "Протеини",
+          "calories": "Калории",
+          "maximum_2": "Максимално",
+          "time_to_prepare": "време за приготвяне",
+          "next_step": "Следваща Стъпка",
+          "prev_step": "Предходна Стъпка"
         }
       };
 }

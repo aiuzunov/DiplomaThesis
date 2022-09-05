@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:html/dom.dart' as dom;
-import 'package:http/http.dart' as http;
 
 void onSettingsItemTap(BuildContext context, int val) {
   switch (val) {
@@ -21,16 +17,14 @@ void onSettingsItemTap(BuildContext context, int val) {
   }
 }
 
-Future getWebsiteData() async {
-  var response = await http
-      .get(Uri.parse('https://www.allrecipes.com/recipe/51773/musaka'));
-  print("JOE MAMA");
-  print(response.body);
+void showErrorMessage(String msg, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(msg, style: const TextStyle(color: Colors.white))));
+}
 
-  dom.Document html = dom.Document.html(response.body);
-  final titles = html
-      .querySelectorAll(
-          '#dartdoc-main-content > section.desc.markdown > div:nth-child(18) > div > div.snippet-description > p:nth-child(4) > img')
-      .toList();
-  print(titles.length);
+void showSucessMessage(String msg, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.green,
+      content: Text(msg, style: const TextStyle(color: Colors.white))));
 }

@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipes_app/screens/reset_password.dart';
 import 'package:get/get.dart';
 
+import '../static/helper_functions.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key, required this.showRegisterPage})
       : super(key: key);
@@ -18,9 +20,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    if (_emailController.text.trim() == '') {
+      showErrorMessage("Please fill the email field!", context);
+      return;
+    }
+
+    if (_passwordController.text.trim() == '') {
+      showErrorMessage("Please fill the password field!", context);
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    } on FirebaseException catch (e) {
+      showErrorMessage(e.message.toString(), context);
+    }
   }
 
   @override

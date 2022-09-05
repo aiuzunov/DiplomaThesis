@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
+import '../static/helper_functions.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key, required this.showLoginPage}) : super(key: key);
   final VoidCallback showLoginPage;
@@ -25,11 +27,31 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future signUp() async {
+    if (_emailController.text.trim() == '') {
+      showErrorMessage("Please fill the email field!", context);
+      return;
+    }
+
+    if (_passwordController.text.trim() == '') {
+      showErrorMessage("Please fill the password field!", context);
+      return;
+    }
+
+    if (_confirmPasswordController.text.trim() == '') {
+      showErrorMessage("Please fill the confirm password field!", context);
+      return;
+    }
+
     if (_confirmPasswordController.text.trim() ==
         _passwordController.text.trim()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim());
+      } on FirebaseAuthException catch (e) {
+        showErrorMessage(e.message.toString(), context);
+        return;
+      }
     }
   }
 

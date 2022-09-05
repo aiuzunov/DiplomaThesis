@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:recipes_app/widgets/app_bar.dart';
 import 'package:recipes_app/widgets/header.dart';
 import 'package:get/get.dart';
-
 import '../static/helper_functions.dart';
 import '../widgets/grid_image.dart';
 
@@ -41,110 +38,17 @@ class _FridgePageState extends State<Fridge> {
   int selectedImageIndex = 1;
   final TextEditingController _nameController = TextEditingController();
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
-    if (documentSnapshot != null) {
-      _nameController.text = documentSnapshot['name'];
-    }
+    try {
+      if (documentSnapshot != null) {
+        _nameController.text = documentSnapshot['name'];
+      }
 
-    await showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext ctx) {
-          return StatefulBuilder(
-              builder: (BuildContext ctx, StateSetter setState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                  top: 20,
-                  left: 20,
-                  right: 20,
-                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(labelText: 'name'.tr),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text("Choose an image:"),
-                  GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 10,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
-                      padding:
-                          const EdgeInsets.only(top: 16, left: 16, right: 16),
-                      children: [
-                        for (int i = 1; i < randomImages.length; i++)
-                          GestureDetector(
-                              onTap: () => {
-                                    setState(
-                                      () {
-                                        selectedImageIndex = i;
-                                      },
-                                    )
-                                  },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          style: selectedImageIndex == i
-                                              ? BorderStyle.solid
-                                              : BorderStyle.none,
-                                          width: 3,
-                                          color: selectedImageIndex == i
-                                              ? Colors.white
-                                              : Colors.transparent)),
-                                  child:
-                                      GridViewImage(imageUrl: randomImages[i])))
-                      ]),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    child: Text('update'.tr),
-                    onPressed: () async {
-                      final String name = _nameController.text;
-                      await _ingredients.doc(documentSnapshot!.id).update({
-                        "name": name,
-                        "image_url": randomImages[selectedImageIndex]
-                      });
-                      _nameController.text = '';
-                    },
-                  ),
-                ],
-              ),
-            );
-          });
-        });
-  }
-
-  Future<void> _delete(String ingredientId) async {
-    await _ingredients.doc(ingredientId).delete();
-
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("You have sucessfully deleted the ingredient.")));
-  }
-
-  void searchRecipeOnButtonTap() {
-    setState(() {
-      searchVal = _nameController.text.trim();
-    });
-  }
-
-  Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
-    _nameController.text = '';
-    if (documentSnapshot != null) {
-      _nameController.text = documentSnapshot['name'];
-    }
-
-    await showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext ctx) {
-          return StatefulBuilder(
-            builder: (BuildContext ctx, StateSetter setState) {
+      await showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (BuildContext ctx) {
+            return StatefulBuilder(
+                builder: (BuildContext ctx, StateSetter setState) {
               return Padding(
                 padding: EdgeInsets.only(
                     top: 20,
@@ -197,28 +101,133 @@ class _FridgePageState extends State<Fridge> {
                       height: 20,
                     ),
                     ElevatedButton(
-                      child: Text('add'.tr),
+                      child: Text('update'.tr),
                       onPressed: () async {
                         final String name = _nameController.text;
-                        await _ingredients.add({
+                        await _ingredients.doc(documentSnapshot!.id).update({
                           "name": name,
-                          "user_uid": user.uid,
                           "image_url": randomImages[selectedImageIndex]
                         });
                         _nameController.text = '';
                       },
-                    )
+                    ),
                   ],
                 ),
               );
-            },
-          );
-        });
+            });
+          });
+    } catch (e) {
+      showErrorMessage("Temporary error, please try again later!", context);
+    }
+  }
+
+  Future<void> _delete(String ingredientId) async {
+    try {
+      await _ingredients.doc(ingredientId).delete();
+    } on FirebaseAuthException catch (e) {
+      showErrorMessage(e.message.toString(), context);
+    }
+
+    if (!mounted) return;
+
+    showSucessMessage("You have sucessfully deleted the ingredient.", context);
+  }
+
+  void searchRecipeOnButtonTap() {
+    setState(() {
+      searchVal = _nameController.text.trim();
+    });
+  }
+
+  Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
+    try {
+      _nameController.text = '';
+      if (documentSnapshot != null) {
+        _nameController.text = documentSnapshot['name'];
+      }
+
+      await showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (BuildContext ctx) {
+            return StatefulBuilder(
+              builder: (BuildContext ctx, StateSetter setState) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                      top: 20,
+                      left: 20,
+                      right: 20,
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(labelText: 'name'.tr),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text("Choose an image:"),
+                      GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 10,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5,
+                          padding: const EdgeInsets.only(
+                              top: 16, left: 16, right: 16),
+                          children: [
+                            for (int i = 1; i < randomImages.length; i++)
+                              GestureDetector(
+                                  onTap: () => {
+                                        setState(
+                                          () {
+                                            selectedImageIndex = i;
+                                          },
+                                        )
+                                      },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              style: selectedImageIndex == i
+                                                  ? BorderStyle.solid
+                                                  : BorderStyle.none,
+                                              width: 3,
+                                              color: selectedImageIndex == i
+                                                  ? Colors.white
+                                                  : Colors.transparent)),
+                                      child: GridViewImage(
+                                          imageUrl: randomImages[i])))
+                          ]),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        child: Text('add'.tr),
+                        onPressed: () async {
+                          final String name = _nameController.text;
+                          await _ingredients.add({
+                            "name": name,
+                            "user_uid": user.uid,
+                            "image_url": randomImages[selectedImageIndex]
+                          });
+                          _nameController.text = '';
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          });
+    } catch (e) {
+      showErrorMessage("Temporary error, please try again later!", context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: customAppBar(context),
@@ -339,86 +348,6 @@ class _FridgePageState extends State<Fridge> {
                                   ],
                                 ));
                           });
-                      // return GridView.builder(
-                      //     gridDelegate:
-                      //         const SliverGridDelegateWithFixedCrossAxisCount(
-                      //             crossAxisCount: 3, mainAxisExtent: 400),
-                      //     shrinkWrap: true,
-                      //     itemCount: streamSnapshot.data!.docs.length,
-                      //     itemBuilder: (context, index) {
-                      //       final DocumentSnapshot documentSnapshot =
-                      //           streamSnapshot.data!.docs[index];
-                      //       return Column(children: <Widget>[
-                      //         Container(
-                      //             padding: const EdgeInsets.all(12),
-                      //             width: 200,
-                      //             decoration: BoxDecoration(
-                      //                 color: Colors.black54,
-                      //                 borderRadius: BorderRadius.circular(16)),
-                      //             child: Column(
-                      //               crossAxisAlignment:
-                      //                   CrossAxisAlignment.start,
-                      //               children: [
-                      //                 ClipRRect(
-                      //                     borderRadius:
-                      //                         BorderRadius.circular(12),
-                      //                     child: Image.asset(
-                      //                         '../lib/images/anime-girl-with-bow-hair_603843-157.webp')),
-                      //                 Padding(
-                      //                     padding: const EdgeInsets.symmetric(
-                      //                         vertical: 12.0, horizontal: 8),
-                      //                     child: Column(
-                      //                         crossAxisAlignment:
-                      //                             CrossAxisAlignment.start,
-                      //                         children: [
-                      //                           Text(documentSnapshot['name'],
-                      //                               style: const TextStyle(
-                      //                                   fontSize: 20)),
-                      //                           Text('Description test',
-                      //                               style: TextStyle(
-                      //                                   color:
-                      //                                       Colors.grey[700]))
-                      //                         ])),
-                      //                 Padding(
-                      //                     padding: const EdgeInsets.symmetric(
-                      //                         horizontal: 10),
-                      //                     child: Row(
-                      //                       mainAxisAlignment:
-                      //                           MainAxisAlignment.spaceBetween,
-                      //                       children: const [
-                      //                         Text("Quantity: 5"),
-                      //                       ],
-                      //                     )),
-                      //                 const SizedBox(
-                      //                   height: 10,
-                      //                 ),
-                      //                 Padding(
-                      //                     padding: const EdgeInsets.symmetric(
-                      //                         horizontal: 10),
-                      //                     child: Row(
-                      //                       mainAxisAlignment:
-                      //                           MainAxisAlignment.spaceBetween,
-                      //                       children: [
-                      //                         IconButton(
-                      //                             iconSize: 20,
-                      //                             onPressed: () =>
-                      //                                 _update(documentSnapshot),
-                      //                             icon: const Icon(Icons.edit)),
-                      //                         IconButton(
-                      //                             iconSize: 20,
-                      //                             onPressed: () => _delete(
-                      //                                 documentSnapshot.id),
-                      //                             icon:
-                      //                                 const Icon(Icons.delete)),
-                      //                       ],
-                      //                     )),
-                      //                 const SizedBox(
-                      //                   height: 1,
-                      //                 ),
-                      //               ],
-                      //             ))
-                      //       ]);
-                      //     });
                     }
                     return const Center(
                       child: CircularProgressIndicator(),

@@ -5,6 +5,8 @@ import 'package:recipes_app/screens/recipe.dart';
 import 'package:recipes_app/widgets/app_bar.dart';
 import 'package:translator/translator.dart';
 import '../models/recipe_model.dart';
+import 'package:flutter/cupertino.dart';
+import '../static/helper_functions.dart';
 import '../widgets/header.dart';
 import 'package:get/get.dart';
 
@@ -34,7 +36,17 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
   }
 
   void removeFavoriteRecipe(String id) async {
-    await _recipes.doc(id).delete();
+    try {
+      await _recipes.doc(id).delete();
+    } on FirebaseException catch (e) {
+      showErrorMessage(e.message.toString(), context);
+    }
+
+    if (!mounted) return;
+
+    showSucessMessage(
+        "You have succesfully removed the recipe from your favorites!",
+        context);
   }
 
   @override
@@ -50,7 +62,7 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
           ),
           Container(
               margin: const EdgeInsets.only(left: 20),
-              child: Header(text: "recipes".tr)),
+              child: Header(text: "fav_recipes".tr)),
           const SizedBox(
             height: 30,
           ),
@@ -103,7 +115,7 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                           controller: ScrollController(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, mainAxisExtent: 550),
+                                  crossAxisCount: 2, mainAxisExtent: 450),
                           shrinkWrap: true,
                           itemCount: streamSnapshot.data!.docs.length,
                           itemBuilder: (context, index) {
@@ -114,6 +126,7 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                 GestureDetector(
                                   onTap: () {
                                     RecipeModel recipeModel = RecipeModel(
+                                        id: documentSnapshot['id'],
                                         ingredients:
                                             documentSnapshot['ingredients'],
                                         servings: documentSnapshot['servings'],
@@ -123,9 +136,12 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                         url: documentSnapshot['url'],
                                         source: documentSnapshot['source'],
                                         name: documentSnapshot['name'],
-                                        totalWeight:
-                                            documentSnapshot['totalWeight'],
-                                        calories: documentSnapshot['calories']);
+                                        analyzedInstructions: documentSnapshot[
+                                            'analyzedInstructions'],
+                                        pricePerServing:
+                                            documentSnapshot['pricePerServing'],
+                                        healthScore:
+                                            documentSnapshot['healthScore']);
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
                                       return RecipePage(
@@ -135,8 +151,8 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                   },
                                   child: Container(
                                       padding: const EdgeInsets.all(12),
-                                      width: 300,
-                                      height: 500,
+                                      width: 320,
+                                      height: 425,
                                       decoration: BoxDecoration(
                                           color: Colors.grey[850],
                                           borderRadius:
@@ -148,12 +164,9 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                           ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              child: Hero(
-                                                tag: documentSnapshot['url'],
-                                                child: Image.network(
-                                                    documentSnapshot['image']
-                                                        .toString()),
-                                              )),
+                                              child: Image.network(
+                                                  documentSnapshot['image']
+                                                      .toString())),
                                           Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -191,22 +204,27 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
-                                                  const Icon(
-                                                      Icons.scale_outlined),
+                                                  const Icon(CupertinoIcons
+                                                      .money_dollar),
                                                   const SizedBox(
-                                                    width: 2,
+                                                    width: 1,
                                                   ),
-                                                  Text(
-                                                      "${documentSnapshot['totalWeight'].toInt().toString()} g"),
+                                                  Text(((documentSnapshot[
+                                                                  'pricePerServing'] *
+                                                              documentSnapshot[
+                                                                  'servings']) /
+                                                          100)
+                                                      .toStringAsFixed(2)),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  const Icon(Icons.run_circle),
+                                                  const Icon(
+                                                      CupertinoIcons.heart),
                                                   const SizedBox(
                                                     width: 2,
                                                   ),
                                                   Text(
-                                                      "${documentSnapshot['calories'].toInt().toString()} cal"),
+                                                      "${documentSnapshot['healthScore']}%"),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
@@ -218,24 +236,20 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                                   Text(
                                                       "${documentSnapshot['totalTime'].toString()}'"),
                                                   const SizedBox(
-                                                    width: 15,
+                                                    width: 10,
                                                   ),
-                                                ],
-                                              )),
-                                          const SizedBox(height: 5),
-                                          Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
+                                                  Container(
+                                                      width: 2,
+                                                      height: 30,
+                                                      color: Colors.white),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
                                                   Text(
                                                       "${documentSnapshot['servings']} ${'servings'.tr}"),
                                                 ],
                                               )),
+                                          const SizedBox(height: 5),
                                           Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -243,7 +257,7 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                                       horizontal: 10),
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   IconButton(
                                                     onPressed: () {
@@ -253,7 +267,7 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                                     icon: const Icon(
                                                       Icons.delete_forever,
                                                     ),
-                                                    iconSize: 25,
+                                                    iconSize: 35,
                                                     color: Colors.white,
                                                   )
                                                 ],
