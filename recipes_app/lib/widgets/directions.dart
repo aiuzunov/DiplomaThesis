@@ -49,11 +49,11 @@ class _DirectionsState extends State<Directions> {
                           }
                         },
                         child: Text("next_step".tr,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Color.fromARGB(255, 100, 255, 218))),
                       )
                     : Text("next_step".tr,
-                        style: TextStyle(color: Colors.grey)),
+                        style: const TextStyle(color: Colors.grey)),
                 currentStep > 0
                     ? TextButton(
                         onPressed: () {
@@ -64,11 +64,11 @@ class _DirectionsState extends State<Directions> {
                           }
                         },
                         child: Text("prev_step".tr,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Color.fromARGB(255, 100, 255, 218))),
                       )
                     : Text("prev_step".tr,
-                        style: TextStyle(color: Colors.grey)),
+                        style: const TextStyle(color: Colors.grey)),
               ],
             );
           },

@@ -31,19 +31,28 @@ class _RecipePageState extends State<RecipePage> {
     });
 
     try {
-      await _favRecipes.add({
-        "id": documentSnapshot.id,
-        "ingredients": documentSnapshot.ingredients,
-        "servings": documentSnapshot.servings,
-        "totalTime": documentSnapshot.totalTime,
-        "url": documentSnapshot.url,
-        "image": documentSnapshot.image,
-        "source": documentSnapshot.source,
-        "name": documentSnapshot.name,
-        "analyzedInstructions": documentSnapshot.analyzedInstructions,
-        "pricePerServing": documentSnapshot.pricePerServing,
-        "healthScore": documentSnapshot.healthScore
-      });
+      _favRecipes
+          .where('id', isEqualTo: documentSnapshot.id)
+          .get()
+          .then((value) => {
+                if (value.docs.isEmpty)
+                  {
+                    _favRecipes.add({
+                      "id": documentSnapshot.id,
+                      "ingredients": documentSnapshot.ingredients,
+                      "servings": documentSnapshot.servings,
+                      "totalTime": documentSnapshot.totalTime,
+                      "url": documentSnapshot.url,
+                      "image": documentSnapshot.image,
+                      "source": documentSnapshot.source,
+                      "name": documentSnapshot.name,
+                      "analyzedInstructions":
+                          documentSnapshot.analyzedInstructions,
+                      "pricePerServing": documentSnapshot.pricePerServing,
+                      "healthScore": documentSnapshot.healthScore
+                    })
+                  }
+              });
     } on FirebaseException catch (e) {
       showErrorMessage(e.message.toString(), context);
     }
