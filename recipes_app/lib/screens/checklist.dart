@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:recipes_app/viewmodels/fridge_viewmodel.dart';
+import 'package:recipes_app/viewmodels/checklist_viewmodel.dart';
 import 'package:recipes_app/widgets/app_bar.dart';
 import 'package:recipes_app/widgets/header.dart';
 import 'package:get/get.dart';
 
-class Fridge extends StatefulWidget {
-  const Fridge({super.key});
+class Checklist extends StatefulWidget {
+  const Checklist({super.key});
 
   @override
-  State<Fridge> createState() => _FridgePageState();
+  State<Checklist> createState() => _ChecklistPageState();
 }
 
-class _FridgePageState extends State<Fridge> {
+class _ChecklistPageState extends State<Checklist> {
   final user = FirebaseAuth.instance.currentUser!;
 
   String searchVal = "";
@@ -28,20 +28,20 @@ class _FridgePageState extends State<Fridge> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(FridgeViewModel());
+    Get.put(ChecklistViewModel());
     return Scaffold(
         backgroundColor: Colors.grey[900],
         appBar: customAppBar(context),
-        floatingActionButton: GetBuilder<FridgeViewModel>(
-            init: Get.find<FridgeViewModel>(),
+        floatingActionButton: GetBuilder<ChecklistViewModel>(
+            init: Get.find<ChecklistViewModel>(),
             builder: (controller) => FloatingActionButton(
                 onPressed: () => controller.createIngredientFromFirestore(
                     _nameController, selectedImageIndex, context),
                 backgroundColor: Colors.white,
                 child: const Icon(Icons.add))),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        body: GetBuilder<FridgeViewModel>(
-          init: Get.find<FridgeViewModel>(),
+        body: GetBuilder<ChecklistViewModel>(
+          init: Get.find<ChecklistViewModel>(),
           builder: (controller) => controller.loading
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -54,7 +54,7 @@ class _FridgePageState extends State<Fridge> {
                     ),
                     Container(
                         margin: const EdgeInsets.only(left: 20),
-                        child: Header(text: "ingredients".tr)),
+                        child: Header(text: "cart".tr)),
                     const SizedBox(
                       height: 30,
                     ),
@@ -88,7 +88,7 @@ class _FridgePageState extends State<Fridge> {
                     Expanded(
                         child: StreamBuilder(
                             stream: (searchVal != "")
-                                ? controller.ingredients
+                                ? controller.checklists
                                     .where('user_uid', isEqualTo: user.uid)
                                     .where('name',
                                         isGreaterThanOrEqualTo: searchVal,
@@ -100,7 +100,7 @@ class _FridgePageState extends State<Fridge> {
                                                     1))
                                     .orderBy('name')
                                     .snapshots()
-                                : controller.ingredients
+                                : controller.checklists
                                     .where('user_uid', isEqualTo: user.uid)
                                     .orderBy('name')
                                     .snapshots(),
@@ -154,7 +154,7 @@ class _FridgePageState extends State<Fridge> {
                                                       IconButton(
                                                           iconSize: 20,
                                                           onPressed: () => {
-                                                                controller.updateIngredientFromFirestore(
+                                                                controller.updateChecklistFromFirestore(
                                                                     _nameController,
                                                                     selectedImageIndex,
                                                                     context,
@@ -166,13 +166,12 @@ class _FridgePageState extends State<Fridge> {
                                                           iconSize: 20,
                                                           onPressed:
                                                               () => {
-                                                                    controller.deleteIngredientFromFirestore(
-                                                                        documentSnapshot
-                                                                            .id,
-                                                                        context)
+                                                                    controller.deleteChecklistFromFirestore(
+                                                                        context,
+                                                                        documentSnapshot)
                                                                   },
                                                           icon: const Icon(
-                                                              Icons.delete)),
+                                                              Icons.check_box)),
                                                     ],
                                                   )),
                                             ],

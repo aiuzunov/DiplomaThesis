@@ -47,6 +47,7 @@ class TransalteText extends Translations {
           "time_to_prepare": "time to prepare",
           "next_step": "Next Step",
           "prev_step": "Previous Step",
+          "cart": "Basket"
         },
         'bg_BG': {
           "email": "Имейл",
@@ -66,9 +67,9 @@ class TransalteText extends Translations {
           "home": "Начало",
           "sign_out": "Излизане",
           "recipes": "Рецепти",
-          "ingredients": "Продукти",
+          "ingredients": "Съставки",
           "find_recipe": "Намери рецепта...",
-          "find_ingredient": "Намери продукт...",
+          "find_ingredient": "Намери съставка...",
           "or": "ИЛИ",
           "get_recommendations": "Виж препоръчаните рецепти",
           "name": "Име",
@@ -91,7 +92,8 @@ class TransalteText extends Translations {
           "maximum_2": "Максимално",
           "time_to_prepare": "време за приготвяне",
           "next_step": "Следваща Стъпка",
-          "prev_step": "Предходна Стъпка"
+          "prev_step": "Предходна Стъпка",
+          "cart": "Кошница"
         }
       };
 }

@@ -3,8 +3,7 @@ import 'package:recipes_app/screens/fav_recipes.dart';
 import 'package:recipes_app/screens/fridge.dart';
 import 'package:recipes_app/screens/recipes.dart';
 import 'package:get/get.dart';
-
-import 'home.dart';
+import 'checklist.dart';
 
 class StartupPage extends StatefulWidget {
   const StartupPage({Key? key, required this.title}) : super(key: key);
@@ -18,10 +17,10 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> {
   int _currentIndex = 0;
   final screens = [
-    Home(),
     const Recipes(),
     const FavouriteRecipes(),
-    const Fridge()
+    const Fridge(),
+    const Checklist()
   ];
 
   @override
@@ -40,10 +39,6 @@ class _StartupPageState extends State<StartupPage> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: 'home'.tr,
-          ),
-          BottomNavigationBarItem(
             icon: const Icon(Icons.food_bank),
             label: 'recipes'.tr,
           ),
@@ -54,6 +49,10 @@ class _StartupPageState extends State<StartupPage> {
           BottomNavigationBarItem(
             icon: const Icon(Icons.storage_rounded),
             label: 'ingredients'.tr,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.shopping_basket),
+            label: 'cart'.tr,
           ),
         ],
       ),
