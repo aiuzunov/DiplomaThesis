@@ -13,8 +13,6 @@ class FridgeViewModel extends GetxController {
 
   CollectionReference<Object?> get ingredients => _ingredients;
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   bool _loading = false;
 
   bool get loading => _loading;
@@ -197,7 +195,7 @@ class FridgeViewModel extends GetxController {
                           await FirestoreIngredients.database
                               .createIngredientFromFirestore({
                             "name": name,
-                            "user_uid": user.uid,
+                            "user_uid": FirebaseAuth.instance.currentUser!.uid,
                             "image_url": randomImages[selectedImageIndex]
                           });
                           nameController.text = '';

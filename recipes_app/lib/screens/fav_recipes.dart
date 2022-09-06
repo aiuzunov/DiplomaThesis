@@ -18,7 +18,6 @@ class FavouriteRecipes extends StatefulWidget {
 }
 
 class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
-  final user = FirebaseAuth.instance.currentUser!;
   final translator = GoogleTranslator();
 
   String searchVal = "";
@@ -89,18 +88,21 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                         child: StreamBuilder(
                             stream: (searchVal != "")
                                 ? controller.favRecipes
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .where('name',
                                         isGreaterThanOrEqualTo: searchVal,
                                         isLessThan: searchVal.substring(
                                                 0, searchVal.length - 1) +
-                                            String.fromCharCode(
-                                                searchVal.codeUnitAt(
-                                                        searchVal.length - 1) +
-                                                    1))
+                                            String.fromCharCode(searchVal.codeUnitAt(
+                                                    searchVal.length - 1) +
+                                                1))
                                     .snapshots()
                                 : controller.favRecipes
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .snapshots(),
                             builder: (context,
                                 AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -121,7 +123,8 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                           GestureDetector(
                                             onTap: () {
                                               RecipeModel recipeModel = RecipeModel(
-                                                  userUid: user.uid,
+                                                  userUid: FirebaseAuth.instance
+                                                      .currentUser!.uid,
                                                   id: documentSnapshot['id'],
                                                   ingredients: documentSnapshot[
                                                       'ingredients'],

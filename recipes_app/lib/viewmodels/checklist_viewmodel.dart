@@ -13,8 +13,6 @@ class ChecklistViewModel extends GetxController {
 
   CollectionReference<Object?> get checklists => _checklists;
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   bool _loading = false;
 
   bool get loading => _loading;
@@ -203,7 +201,7 @@ class ChecklistViewModel extends GetxController {
                           await FirestoreChecklists.database
                               .createChecklistFromFirestore({
                             "name": name,
-                            "user_uid": user.uid,
+                            "user_uid": FirebaseAuth.instance.currentUser!.uid,
                             "image_url": randomImages[selectedImageIndex]
                           });
                           nameController.text = '';

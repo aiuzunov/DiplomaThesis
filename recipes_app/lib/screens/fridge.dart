@@ -14,8 +14,6 @@ class Fridge extends StatefulWidget {
 }
 
 class _FridgePageState extends State<Fridge> {
-  final user = FirebaseAuth.instance.currentUser!;
-
   String searchVal = "";
   int selectedImageIndex = 1;
   final TextEditingController _nameController = TextEditingController();
@@ -89,7 +87,9 @@ class _FridgePageState extends State<Fridge> {
                         child: StreamBuilder(
                             stream: (searchVal != "")
                                 ? controller.ingredients
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .where('name',
                                         isGreaterThanOrEqualTo: searchVal,
                                         isLessThan: searchVal.substring(
@@ -101,7 +101,9 @@ class _FridgePageState extends State<Fridge> {
                                     .orderBy('name')
                                     .snapshots()
                                 : controller.ingredients
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .orderBy('name')
                                     .snapshots(),
                             builder: (context,

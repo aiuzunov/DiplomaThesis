@@ -26,8 +26,6 @@ class Recipes extends StatefulWidget {
 }
 
 class _RecipesPageState extends State<Recipes> {
-  final user = FirebaseAuth.instance.currentUser!;
-
   String cuisineFilterVal = "";
   final TextEditingController _maxTimeReadyFilter = TextEditingController();
   final TextEditingController _minCaloriesFilter = TextEditingController();

@@ -10,8 +10,6 @@ class FavRecipesViewModel extends GetxController {
 
   CollectionReference<Object?> get favRecipes => _favRecipes;
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   bool _loading = false;
 
   bool get loading => _loading;
@@ -38,7 +36,7 @@ class FavRecipesViewModel extends GetxController {
                 if (value.docs.isEmpty)
                   {
                     FirestoreFavRecipes().createFavRecipeFromFirestore({
-                      "user_uid": user.uid,
+                      "user_uid": FirebaseAuth.instance.currentUser!.uid,
                       "id": documentSnapshot.id,
                       "ingredients": documentSnapshot.ingredients,
                       "servings": documentSnapshot.servings,

@@ -17,8 +17,6 @@ class RecipesViewmodel extends GetxController {
 
   List<RecipeCardModel> get recipes => _recipes;
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   bool _loading = false;
   final translator = GoogleTranslator();
 
@@ -40,7 +38,7 @@ class RecipesViewmodel extends GetxController {
 
       var userIngredientsCollection = FirebaseFirestore.instance
           .collection('ingredients')
-          .where('user_uid', isEqualTo: user.uid);
+          .where('user_uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
 
       userIngredientsCollection.snapshots().forEach((snapshot) async {
         for (var element in snapshot.docs) {
@@ -132,7 +130,7 @@ class RecipesViewmodel extends GetxController {
     }
 
     return RecipeModel(
-        userUid: user.uid,
+        userUid: FirebaseAuth.instance.currentUser!.uid,
         id: json['id'],
         name: json['title'],
         image: json['image'],

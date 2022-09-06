@@ -14,8 +14,6 @@ class Checklist extends StatefulWidget {
 }
 
 class _ChecklistPageState extends State<Checklist> {
-  final user = FirebaseAuth.instance.currentUser!;
-
   String searchVal = "";
   int selectedImageIndex = 1;
   final TextEditingController _nameController = TextEditingController();
@@ -89,7 +87,9 @@ class _ChecklistPageState extends State<Checklist> {
                         child: StreamBuilder(
                             stream: (searchVal != "")
                                 ? controller.checklists
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .where('name',
                                         isGreaterThanOrEqualTo: searchVal,
                                         isLessThan: searchVal.substring(
@@ -101,7 +101,9 @@ class _ChecklistPageState extends State<Checklist> {
                                     .orderBy('name')
                                     .snapshots()
                                 : controller.checklists
-                                    .where('user_uid', isEqualTo: user.uid)
+                                    .where('user_uid',
+                                        isEqualTo: FirebaseAuth
+                                            .instance.currentUser!.uid)
                                     .orderBy('name')
                                     .snapshots(),
                             builder: (context,
