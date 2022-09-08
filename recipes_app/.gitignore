@@ -33,6 +33,7 @@ migrate_working_dir/
 /build/
 lib/images/
 lib/auth/secrets.json
+lib/firebase_options.dart
 
 # Web related
 lib/generated_plugin_registrant.dart
