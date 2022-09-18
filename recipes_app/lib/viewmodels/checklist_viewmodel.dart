@@ -42,8 +42,7 @@ class ChecklistViewModel extends GetxController {
     } on FirebaseException catch (e) {
       showErrorMessage(e.message.toString(), context);
     }
-    showSucessMessage(
-        "You have sucessfully added the ingredient to your products.", context);
+    showSucessMessage("succesfully_added_ingredient".tr, context);
   }
 
   updateChecklistFromFirestore(
@@ -76,7 +75,7 @@ class ChecklistViewModel extends GetxController {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text("Choose an image:"),
+                    Text("choose_image".tr),
                     GridView.count(
                         shrinkWrap: true,
                         crossAxisCount: 10,
@@ -128,7 +127,7 @@ class ChecklistViewModel extends GetxController {
             });
           });
     } catch (e) {
-      showErrorMessage("Temporary error, please try again later!", context);
+      showErrorMessage("temp_error".tr, context);
     }
   }
 
@@ -160,7 +159,7 @@ class ChecklistViewModel extends GetxController {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Text("Choose an image:"),
+                      Text("choose_image".tr),
                       GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 10,
@@ -216,6 +215,6 @@ class ChecklistViewModel extends GetxController {
     } on FirebaseException catch (e) {
       showErrorMessage(e.message.toString(), context);
     }
-    showSucessMessage("You have sucessfully added an ingredient.", context);
+    showSucessMessage("sucessfully_added_ingredient_c".tr, context);
   }
 }

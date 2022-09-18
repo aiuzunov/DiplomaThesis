@@ -33,6 +33,7 @@ class _FridgePageState extends State<Fridge> {
         floatingActionButton: GetBuilder<FridgeViewModel>(
             init: Get.find<FridgeViewModel>(),
             builder: (controller) => FloatingActionButton(
+                heroTag: 'createIngredientFridge',
                 onPressed: () => controller.createIngredientFromFirestore(
                     _nameController, selectedImageIndex, context),
                 backgroundColor: Colors.white,

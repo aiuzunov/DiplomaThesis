@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:recipes_app/models/recipe_model.dart';
 
 class Ingredients extends StatelessWidget {
@@ -11,7 +12,9 @@ class Ingredients extends StatelessWidget {
         child: Column(
       children: [
         ListView.separated(
-            itemCount: recipeModel.ingredients.length,
+            itemCount: Get.locale.toString() == 'bg_BG'
+                ? recipeModel.ingredientsBg.length
+                : recipeModel.ingredients.length,
             controller: ScrollController(),
             primary: false,
             physics: const ScrollPhysics(),
@@ -25,8 +28,11 @@ class Ingredients extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                        child: Text(
-                            "${recipeModel.ingredients[index]['original']}")),
+                        child: Get.locale.toString() == 'bg_BG'
+                            ? Text(
+                                "${recipeModel.ingredientsBg[index]['original']}")
+                            : Text(
+                                "${recipeModel.ingredients[index]['original']}")),
                   ],
                 ),
               );

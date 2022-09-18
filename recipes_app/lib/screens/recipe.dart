@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,7 +57,15 @@ class _RecipePageState extends State<RecipePage> {
                               right: 20,
                               child: widget.favorite
                                   ? IconButton(
-                                      onPressed: () => {},
+                                      onPressed: () => {
+                                        controller.createFavRecipeFromFirestore(
+                                            widget.recipeModel, context),
+                                        setState(
+                                          () {
+                                            widget.favorite = false;
+                                          },
+                                        )
+                                      },
                                       icon:
                                           const Icon(Icons.favorite, size: 38),
                                       color: const Color.fromARGB(
@@ -108,8 +115,11 @@ class _RecipePageState extends State<RecipePage> {
                                       borderRadius: BorderRadius.circular(12))),
                             ),
                             const SizedBox(height: 30),
-                            Text(widget.recipeModel.name,
-                                style: textTheme.headline6),
+                            Get.locale.toString() == 'bg_BG'
+                                ? Text(widget.recipeModel.nameBg,
+                                    style: textTheme.headline6)
+                                : Text(widget.recipeModel.name,
+                                    style: textTheme.headline6),
                             const SizedBox(height: 10),
                             Text("${"author".tr}: ${widget.recipeModel.source}",
                                 style: textTheme.caption),

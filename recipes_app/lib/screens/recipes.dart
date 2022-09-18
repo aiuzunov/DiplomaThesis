@@ -1,17 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:recipes_app/auth/keys.dart';
 import 'package:recipes_app/models/recipe_card_model.dart';
 import 'package:recipes_app/screens/recipe.dart';
 import 'package:recipes_app/static/helper_functions.dart';
 import 'package:recipes_app/viewmodels/recipes_viewmodel.dart';
 import 'package:recipes_app/widgets/app_bar.dart';
-import 'package:translator/translator.dart';
 import '../input_formatters/input_formatters.dart';
 import '../models/recipe_model.dart';
 import '../widgets/header.dart';
@@ -57,7 +52,7 @@ class _RecipesPageState extends State<Recipes> {
                     ),
                     Row(
                       children: [
-                        const Text('Cuisine: '),
+                        Text("${"cuisine".tr}: "),
                         const SizedBox(
                           width: 20,
                         ),
@@ -371,14 +366,27 @@ class _RecipesPageState extends State<Recipes> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Text(
-                                                          documentSnapshot.name,
-                                                          maxLines: 2,
-                                                          style: const TextStyle(
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              fontSize: 20)),
+                                                      Get.locale.toString() ==
+                                                              'bg_BG'
+                                                          ? Text(
+                                                              documentSnapshot
+                                                                  .nameBg,
+                                                              maxLines: 2,
+                                                              style: const TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  fontSize: 20))
+                                                          : Text(
+                                                              documentSnapshot
+                                                                  .name,
+                                                              maxLines: 2,
+                                                              style: const TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  fontSize:
+                                                                      20)),
                                                     ])),
                                             const SizedBox(
                                               height: 10,

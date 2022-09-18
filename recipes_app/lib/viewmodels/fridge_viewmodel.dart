@@ -37,7 +37,7 @@ class FridgeViewModel extends GetxController {
     } on FirebaseException catch (e) {
       showErrorMessage(e.message.toString(), context);
     }
-    showSucessMessage("You have sucessfully deleted the ingredient.", context);
+    showSucessMessage("remove_ingredient".tr, context);
   }
 
   updateIngredientFromFirestore(
@@ -70,7 +70,7 @@ class FridgeViewModel extends GetxController {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text("Choose an image:"),
+                    Text("choose_image".tr),
                     GridView.count(
                         shrinkWrap: true,
                         crossAxisCount: 10,
@@ -122,7 +122,7 @@ class FridgeViewModel extends GetxController {
             });
           });
     } catch (e) {
-      showErrorMessage("Temporary error, please try again later!", context);
+      showErrorMessage("temp_error".tr, context);
     }
   }
 
@@ -154,7 +154,7 @@ class FridgeViewModel extends GetxController {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Text("Choose an image:"),
+                      Text("choose_image".tr),
                       GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 10,
@@ -210,6 +210,6 @@ class FridgeViewModel extends GetxController {
     } on FirebaseException catch (e) {
       showErrorMessage(e.message.toString(), context);
     }
-    showSucessMessage("You have sucessfully added an ingredient.", context);
+    showSucessMessage("add_ingredient".tr, context);
   }
 }

@@ -14,14 +14,24 @@ class _DirectionsState extends State<Directions> {
   int currentStep = 0;
   List<Step> getSteps() {
     List<Step> steps = <Step>[];
-
-    for (var element in widget.recipeModel.analyzedInstructions) {
-      steps.add(Step(
-          isActive: currentStep == element['number'] - 1,
-          title: Text("${"step".tr} ${element['number']}"),
-          content: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(element['step'].toString()))));
+    if (Get.locale.toString() == 'bg_BG') {
+      for (var element in widget.recipeModel.analyzedInstructionsBg) {
+        steps.add(Step(
+            isActive: currentStep == element['number'] - 1,
+            title: Text("${"step".tr} ${element['number']}"),
+            content: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(element['step'].toString()))));
+      }
+    } else {
+      for (var element in widget.recipeModel.analyzedInstructions) {
+        steps.add(Step(
+            isActive: currentStep == element['number'] - 1,
+            title: Text("${"step".tr} ${element['number']}"),
+            content: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(element['step'].toString()))));
+      }
     }
 
     return steps;

@@ -121,32 +121,13 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                       return Column(
                                         children: <Widget>[
                                           GestureDetector(
-                                            onTap: () {
-                                              RecipeModel recipeModel = RecipeModel(
-                                                  userUid: FirebaseAuth.instance
-                                                      .currentUser!.uid,
-                                                  id: documentSnapshot['id'],
-                                                  ingredients: documentSnapshot[
-                                                      'ingredients'],
-                                                  servings: documentSnapshot[
-                                                      'servings'],
-                                                  totalTime: documentSnapshot[
-                                                      'totalTime'],
-                                                  image:
-                                                      documentSnapshot['image'],
-                                                  url: documentSnapshot['url'],
-                                                  source: documentSnapshot[
-                                                      'source'],
-                                                  name:
-                                                      documentSnapshot['name'],
-                                                  analyzedInstructions:
-                                                      documentSnapshot[
-                                                          'analyzedInstructions'],
-                                                  pricePerServing:
-                                                      documentSnapshot[
-                                                          'pricePerServing'],
-                                                  healthScore: documentSnapshot[
-                                                      'healthScore']);
+                                            onTap: () async {
+                                              RecipeModel recipeModel =
+                                                  await controller
+                                                      .getFavRecipeInfo(
+                                                          documentSnapshot,
+                                                          translator);
+                                              if (!mounted) return;
                                               Navigator.push(context,
                                                   MaterialPageRoute(
                                                       builder: (context) {
@@ -188,16 +169,28 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Text(
-                                                                  documentSnapshot[
-                                                                      'name'],
-                                                                  maxLines: 2,
-                                                                  style: const TextStyle(
-                                                                      overflow:
-                                                                          TextOverflow
+                                                              Get.locale.toString() ==
+                                                                      'bg_BG'
+                                                                  ? Text(
+                                                                      documentSnapshot[
+                                                                          'nameBg'],
+                                                                      maxLines:
+                                                                          2,
+                                                                      style: const TextStyle(
+                                                                          overflow: TextOverflow
                                                                               .ellipsis,
-                                                                      fontSize:
-                                                                          20)),
+                                                                          fontSize:
+                                                                              20))
+                                                                  : Text(
+                                                                      documentSnapshot[
+                                                                          'name'],
+                                                                      maxLines:
+                                                                          2,
+                                                                      style: const TextStyle(
+                                                                          overflow: TextOverflow
+                                                                              .ellipsis,
+                                                                          fontSize:
+                                                                              20)),
                                                               // Text('Description test',
                                                               //     style: TextStyle(
                                                               //         color: Colors.grey[700]))

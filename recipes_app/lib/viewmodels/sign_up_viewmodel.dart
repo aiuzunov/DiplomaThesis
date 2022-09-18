@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
 
 import '../services/authentication_service.dart';
 import '../static/helper_functions.dart';
@@ -19,17 +19,17 @@ class SignUpViewModel extends GetxController {
   signUp(emailController, passwordController, confirmPasswordController,
       context) async {
     if (emailController.text.trim() == '') {
-      showErrorMessage("Please fill the email field!", context);
+      showErrorMessage("fill_email".tr, context);
       return;
     }
 
     if (passwordController.text.trim() == '') {
-      showErrorMessage("Please fill the password field!", context);
+      showErrorMessage("fill_password".tr, context);
       return;
     }
 
     if (confirmPasswordController.text.trim() == '') {
-      showErrorMessage("Please fill the confirm password field!", context);
+      showErrorMessage("fill_add_password".tr, context);
       return;
     }
 

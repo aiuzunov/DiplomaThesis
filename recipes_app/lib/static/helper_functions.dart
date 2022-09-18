@@ -28,3 +28,31 @@ void showSucessMessage(String msg, BuildContext context) {
       backgroundColor: Colors.green,
       content: Text(msg, style: const TextStyle(color: Colors.white))));
 }
+
+translateText(String text, translator) async {
+  var translation;
+
+  if (Get.locale.toString() == 'bg_BG') {
+    translation = await translator.translate(text, from: 'en', to: 'bg');
+  }
+
+  return translation != null ? translation.text : text;
+}
+
+translateTextToBulgarian(String text, translator) async {
+  var translation;
+
+  translation = await translator.translate(text, from: 'en', to: 'bg');
+
+  return translation != null ? translation.text : text;
+}
+
+Map<dynamic, dynamic> copyDeepMap(Map<dynamic, dynamic> map) {
+  Map<dynamic, dynamic> newMap = {};
+
+  map.forEach((key, value) {
+    newMap[key] = (value is Map) ? copyDeepMap(value) : value;
+  });
+
+  return newMap;
+}

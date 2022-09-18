@@ -33,6 +33,7 @@ class _ChecklistPageState extends State<Checklist> {
         floatingActionButton: GetBuilder<ChecklistViewModel>(
             init: Get.find<ChecklistViewModel>(),
             builder: (controller) => FloatingActionButton(
+                heroTag: 'createIngredientChecklist',
                 onPressed: () => controller.createIngredientFromFirestore(
                     _nameController, selectedImageIndex, context),
                 backgroundColor: Colors.white,

@@ -47,7 +47,24 @@ class TransalteText extends Translations {
           "time_to_prepare": "time to prepare",
           "next_step": "Next Step",
           "prev_step": "Previous Step",
-          "cart": "Basket"
+          "cart": "Basket",
+          "succesfully_added_ingredient":
+              "You have sucessfully added the ingredient to your products.",
+          "temp_error": "Temporary error, please try again later!",
+          "choose_image": "Choose an image",
+          "sucessfully_added_ingredient_c":
+              "You have sucessfully added an ingredient to your checklist.",
+          "add_recipe":
+              "You have sucessfully added the recipe to your favorites.",
+          "remove_recipe":
+              "You have sucessfully removed the recipe from your favorites.",
+          "remove_ingredient":
+              "You have sucessfully removed the ingredient from your available ingredients.",
+          "add_ingredient":
+              "You have sucessfully added the ingredient to your available ingredients.",
+          "fill_email": "Please fill the email field!",
+          "fill_password": "Please fill the password field!",
+          "fill_add_password": "Please fill the confirm password field!"
         },
         'bg_BG': {
           "email": "Имейл",
@@ -93,7 +110,25 @@ class TransalteText extends Translations {
           "time_to_prepare": "време за приготвяне",
           "next_step": "Следваща Стъпка",
           "prev_step": "Предходна Стъпка",
-          "cart": "Кошница"
+          "cart": "Кошница",
+          "succesfully_added_ingredient":
+              "Вие успешно добавихте продукт към вашите продукти.",
+          "temp_error": "Временна грешка, моля опитайте по-късно!",
+          "choose_image": "Изберете изображение",
+          "sucessfully_added_ingredient_c":
+              "Вие успешно добавихте продукт към вашата кошница с продукти.",
+          "add_recipe":
+              "Вие успешно добавихте рецептата към вашите любими рецепти.",
+          "remove_recipe":
+              "Вие успешно премахнахте рецептата от вашите любими рецпети.",
+          "remove_ingredient":
+              "Вие успешно премахнахте продукта от вашите налични продукти.",
+          "add_ingredient":
+              "Вие успешно добавихте продукта към вашите налични продукти.",
+          "fill_email": "Моля попълнете полето за имейл!",
+          "fill_password": "Моля попълнете полето за парола!",
+          "fill_add_password":
+              "Моля попълнете полето за потвърждение на паролата!"
         }
       };
 }
