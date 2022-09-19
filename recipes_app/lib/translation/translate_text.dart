@@ -64,7 +64,9 @@ class TransalteText extends Translations {
               "You have sucessfully added the ingredient to your available ingredients.",
           "fill_email": "Please fill the email field!",
           "fill_password": "Please fill the password field!",
-          "fill_add_password": "Please fill the confirm password field!"
+          "fill_add_password": "Please fill the confirm password field!",
+          "recipes_not_found": "No recipes that match the search were found",
+          "please_add_ingredients": "Please add some ingredients and try again!"
         },
         'bg_BG': {
           "email": "Имейл",
@@ -128,7 +130,10 @@ class TransalteText extends Translations {
           "fill_email": "Моля попълнете полето за имейл!",
           "fill_password": "Моля попълнете полето за парола!",
           "fill_add_password":
-              "Моля попълнете полето за потвърждение на паролата!"
+              "Моля попълнете полето за потвърждение на паролата!",
+          "recipes_not_found": "Не са намерени рецепти съвпадащи с търсенето",
+          "please_add_ingredients":
+              "Нямате добавени налични продукти, моля опитайте пак след като добавите такива."
         }
       };
 }

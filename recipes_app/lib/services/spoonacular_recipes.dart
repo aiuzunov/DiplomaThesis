@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../auth/keys.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,7 +22,7 @@ class SpoonacularRecipes {
     Secret awaitedSecret = await futureSecret;
 
     var url =
-        '${this.url}findByIngredients?ingredients=$searchString&apiKey=${awaitedSecret.apiKey}&number=1';
+        '${this.url}findByIngredients?ingredients=$searchString&apiKey=${awaitedSecret.apiKey}&number=5';
 
     var response = await http.get(Uri.parse(url));
 
@@ -42,7 +40,7 @@ class SpoonacularRecipes {
     Secret awaitedSecret = await futureSecret;
 
     var url =
-        '${this.url}complexSearch?query=$searchString&apiKey=${awaitedSecret.apiKey}&number=1';
+        '${this.url}complexSearch?query=$searchString&apiKey=${awaitedSecret.apiKey}&number=5';
 
     if (cuisineFilterVal != '') {
       url += '&cuisine=$cuisineFilterVal';

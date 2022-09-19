@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:recipes_app/viewmodels/fridge_viewmodel.dart';
 import 'package:translator/translator.dart';
 
 import '../models/recipe_card_model.dart';
@@ -33,37 +32,38 @@ class RecipesViewmodel extends GetxController {
 
       _recipes = [];
 
-      FridgeViewModel viewModel = FridgeViewModel();
-
       var userIngredientsCollection = FirebaseFirestore.instance
           .collection('ingredients')
           .where('user_uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+      var allIngredients = await userIngredientsCollection.get();
 
-      userIngredientsCollection.snapshots().forEach((snapshot) async {
-        for (var element in snapshot.docs) {
-          {
-            userIngredientsList.add(element['name']);
-          }
+      if (allIngredients.docs.isEmpty) {
+        showErrorMessage("please_add_ingredients".tr, context);
+        return;
+      }
 
-          var response = await SpoonacularRecipes.spoonacularApi
-              .makeRecommendedRequest(userIngredientsList.join(", "));
-          List<dynamic> json = jsonDecode(response.body);
+      for (var ingredient in allIngredients.docs) {
+        userIngredientsList.add(
+            await translateTextReverse(ingredient.data()['name'], translator));
+      }
+      var response = await SpoonacularRecipes.spoonacularApi
+          .makeRecommendedRequest(userIngredientsList.join(", "));
+      List<dynamic> json = jsonDecode(response.body);
 
-          for (var element in json) {
-            String translation =
-                await translateTextToBulgarian(element['title'], translator);
+      for (var element in json) {
+        String translation =
+            await translateTextToBulgarian(element['title'], translator);
 
-            RecipeCardModel recipeCard = RecipeCardModel(
-                image: element['image'],
-                id: element['id'],
-                name: element['title'],
-                nameBg: translation);
+        RecipeCardModel recipeCard = RecipeCardModel(
+            image: element['image'],
+            id: element['id'],
+            name: element['title'],
+            nameBg: translation);
 
-            _recipes.add(recipeCard);
-          }
-          _refreshRecipes();
-        }
-      });
+        _recipes.add(recipeCard);
+
+        _refreshRecipes();
+      }
     } catch (e) {
       showErrorMessage("${"temp_error".tr} $e", context);
     }
@@ -80,7 +80,7 @@ class RecipesViewmodel extends GetxController {
       context) async {
     try {
       String searchVal = nameController.text.trim();
-
+      searchVal = await translateTextReverse(searchVal, translator);
       var response = await SpoonacularRecipes.spoonacularApi.makeSearchRequest(
           searchVal,
           cuisineFilterVal,

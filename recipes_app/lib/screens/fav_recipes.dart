@@ -299,8 +299,8 @@ class _FavouriteRecipesPageState extends State<FavouriteRecipes> {
                                       );
                                     });
                               }
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Center(
+                                child: Text("recipes_not_found".tr),
                               );
                             }))
                   ],

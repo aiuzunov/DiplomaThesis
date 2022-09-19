@@ -39,20 +39,18 @@ translateText(String text, translator) async {
   return translation != null ? translation.text : text;
 }
 
+translateTextReverse(String text, translator) async {
+  var translation;
+
+  translation = await translator.translate(text, from: 'bg', to: 'en');
+
+  return translation != null ? translation.text : text;
+}
+
 translateTextToBulgarian(String text, translator) async {
   var translation;
 
   translation = await translator.translate(text, from: 'en', to: 'bg');
 
   return translation != null ? translation.text : text;
-}
-
-Map<dynamic, dynamic> copyDeepMap(Map<dynamic, dynamic> map) {
-  Map<dynamic, dynamic> newMap = {};
-
-  map.forEach((key, value) {
-    newMap[key] = (value is Map) ? copyDeepMap(value) : value;
-  });
-
-  return newMap;
 }
